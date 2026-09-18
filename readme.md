@@ -1,5 +1,6 @@
 ### 自用[autohotkey](https://www.autohotkey.com/)脚本
 
+点击`.ahk`文件直接运行
 
 - `mytab.ahk` Windows使用`alt`+`tab`过滤最小化的窗口
 
