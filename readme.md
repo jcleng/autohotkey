@@ -5,3 +5,5 @@
 - `mytab.ahk` Windows使用`alt`+`tab`过滤最小化的窗口
 
 ![img/10c172fe-397e-498a-a422-0c3a5351fa2b.png](img/10c172fe-397e-498a-a422-0c3a5351fa2b.png)
+
+- `quictsearch.ahk` Windows使用`ctrl`+`alt`+`c`快捷搜索选中的词
