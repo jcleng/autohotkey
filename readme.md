@@ -11,3 +11,4 @@
 - `quictsearchtoos.ahk`Windows使用`ctrl`+`shift`+`alt`+`T`快捷对选中的词进行快捷操作
 
         翻译是用的本地`LibreTranslate`翻译
+![img/b843bfb7-f316-44da-82e1-cb8e89223c85.png](img/b843bfb7-f316-44da-82e1-cb8e89223c85.png)
