@@ -40,9 +40,15 @@ global MyGui := ""
                 minMax := WinGetMinMax(this_id)
                 title := WinGetTitle(this_id)
 
+                ; 基础过滤：最小化、无标题、不可见窗口
                 if (minMax == -1 || title == "" || !(style & 0x10000000))
                     continue
 
+                ; 🚀 核心新增：过滤软件名称/标题中带有 `-siw` 的窗口
+                if (InStr(title, "-siw"))
+                    continue
+
+                ; 过滤系统特定不参与切换的组件
                 if (title == "Program Manager" || title == "Start" || title == "任务切换" || title == "Windows 输入体验")
                     continue
 
