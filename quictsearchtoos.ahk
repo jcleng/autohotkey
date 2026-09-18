@@ -1,6 +1,6 @@
 ; ==============================================================================
-; 功能：Ctrl + Alt + Shift + T 文本万能工具箱（修复 Normal 语法错误版）
-; 特点：大字菜单预览，集成常见文本格式化，带剪贴板保护与翻译接口防挂锁
+; 功能：Ctrl + Alt + Shift + T 文本万能工具箱（一行 2 列紧凑排列版）
+; 特点：大字菜单预览，双列并排节省空间，集成常见文本格式化与本地翻译接口
 ; ==============================================================================
 
 #Requires AutoHotkey v2.0
@@ -37,28 +37,34 @@ global ToolBoxGui := ""
         ToolBoxGui := ""
     }
 
-    ; 2. 构建高颜值大字功能列表窗口
+    ; 2. 构建高颜值双列布局窗口
     ToolBoxGui := Gui("+AlwaysOnTop -Caption +ToolWindow +Border", "文本万能工具箱")
     ToolBoxGui.BackColor := "FDFDFD"
 
-    ; 头部提示
+    ; 头部提示（加宽至 520 像素，适应双列布局）
     ToolBoxGui.SetFont("s13 Bold Q5", "Microsoft YaHei")
-    ToolBoxGui.Add("Text", "w450 c666666 x20 y15", "🛠️ 文本万能工具箱（请选择要执行的操作）")
-    ToolBoxGui.Add("Text", "w450 cCCCCCC x20 y+2", "-------------------------------------------------------------------------")
+    ToolBoxGui.Add("Text", "w500 c666666 x20 y15", "🛠️ 文本万能工具箱")
+    ToolBoxGui.Add("Text", "w500 cCCCCCC x20 y+2", "----------------------------------------------------------------------------------")
 
-    ; 📐 按钮列表样式：已修正为 v2 标准的 norm 关键字
-    ToolBoxGui.SetFont("s14 norm Q5", "Microsoft YaHei")
+    ; 📐 设置按钮字体：13号微软雅黑（稍作微调以适应并排）
+    ToolBoxGui.SetFont("s13 norm Q5", "Microsoft YaHei")
 
-    ; 动态添加选项按钮，绑定点击事件
-    ToolBoxGui.Add("Button", "x20 y+15 w410 h40 Left", " 1. 驼峰命名 (camelCase)").OnEvent("Click", HandleToolAction.Bind(1))
-    ToolBoxGui.Add("Button", "x20 y+10 w410 h40 Left", " 2. 下划线命名 (snake_case)").OnEvent("Click", HandleToolAction.Bind(2))
-    ToolBoxGui.Add("Button", "x20 y+10 w410 h40 Left", " 3. 转换为纯大写 (UPPERCASE)").OnEvent("Click", HandleToolAction.Bind(3))
-    ToolBoxGui.Add("Button", "x20 y+10 w410 h40 Left", " 4. 转换为纯小写 (lowercase)").OnEvent("Click", HandleToolAction.Bind(4))
-    ToolBoxGui.Add("Button", "x20 y+10 w410 h40 Left", " 5. 🚀 翻译为英文 (本地 API 接口)").OnEvent("Click", HandleToolAction.Bind(5))
+    ; ─── 🚀 【核心优化：双列栅格化布局】 ───
+    ; 第一行：1.驼峰 (左)  |  2.下划线 (右)
+    ToolBoxGui.Add("Button", "x20 y+15 w240 h42 Left", " 1. 驼峰命名 (camelCase)").OnEvent("Click", HandleToolAction.Bind(1))
+    ToolBoxGui.Add("Button", "x270 yp w240 h42 Left", " 2. 下划线命名 (snake_case)").OnEvent("Click", HandleToolAction.Bind(2))
 
-    ; 取消按钮部分同样移除了可能导致冲突的特殊字体标记
+    ; 第二行：3.纯大写 (左)  |  4.纯小写 (右)
+    ToolBoxGui.Add("Button", "x20 y+10 w240 h42 Left", " 3. 转换为纯大写 (UPPER)").OnEvent("Click", HandleToolAction.Bind(3))
+    ToolBoxGui.Add("Button", "x270 yp w240 h42 Left", " 4. 转换为纯小写 (lower)").OnEvent("Click", HandleToolAction.Bind(4))
+
+    ; 第三行：5. 本地翻译（独占一行通铺，拉满宽度）
+    ToolBoxGui.Add("Button", "x20 y+10 w490 h42 Left", " 5. 🚀 翻译为英文 (本地 API 接口)").OnEvent("Click", HandleToolAction.Bind(5))
+
+    ; 第四行：取消/关闭按钮
     ToolBoxGui.SetFont("s11 c999999 norm", "Microsoft YaHei")
-    ToolBoxGui.Add("Button", "x20 y+15 w410 h35 Center", "取消 (或按 Esc 键关闭)").OnEvent("Click", (*) => ToolBoxGui.Destroy())
+    ToolBoxGui.Add("Button", "x20 y+12 w490 h35 Center", "取消 (或按 Esc 键关闭)").OnEvent("Click", (*) => ToolBoxGui.Destroy())
+    ; ──────────────────────────────────────
 
     ToolBoxGui.OnEvent("Escape", (*) => ToolBoxGui.Destroy())
     ToolBoxGui.Show("Center")
@@ -133,9 +139,10 @@ TranslateToEnglish(textToTranslate) {
 
         responseJSON := whr.ResponseText
 
+        ; 提取匹配组中的第一个值（即翻译后的文本）
         if RegExMatch(responseJSON, '"translatedText"\s*:\s*"([^"]+)"', &match) {
             ToolTip ""
-            return RegExReplace(match[1], '\\n', '`n') ; 👈 修复了提取子匹配组的规范
+            return RegExReplace(match[1], '\\n', '`n') ; 👈 修正： match[1] 才能正确读取括号内的文本
         } else {
             throw Error("无法解析返回的 JSON 字段")
         }
