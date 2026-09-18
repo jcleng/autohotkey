@@ -6,7 +6,7 @@
 
 ![img/10c172fe-397e-498a-a422-0c3a5351fa2b.png](img/10c172fe-397e-498a-a422-0c3a5351fa2b.png)
 
-- `quictsearch.ahk` Windows使用`ctrl`+`alt`+`c`快捷搜索选中的词
+- `quictsearch.ahk` Windows使用`ctrl`+`shift`+`alt`+`C`快捷搜索选中的词
 
 - `quictsearchtoos.ahk`Windows使用`ctrl`+`shift`+`alt`+`T`快捷对选中的词进行快捷操作
 
