@@ -129,7 +129,7 @@ global MyGui := ""
         MyGui["Arrow" CurrentIdx].Value := "👉 "
         newDisplayTitle := (StrLen(ValidWins[CurrentIdx].title) > 35) ? SubStr(ValidWins[CurrentIdx].title, 1, 35) "..." : ValidWins[CurrentIdx].title
         MyGui["Txt" CurrentIdx].SetFont("cFF3333 Bold")
-        MyGui["Txt" CurrentIdx].Value := "【" CurrentIdx "】 " newDisplayTitle
+        MyGui["Txt" CurrentIdx].Value := newDisplayTitle
     }
 }
 
