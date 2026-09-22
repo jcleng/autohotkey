@@ -58,8 +58,9 @@ global ToolBoxGui := ""
     ToolBoxGui.Add("Button", "x20 y+10 w240 h42 Left", " 3. 转换为纯大写 (UPPER)").OnEvent("Click", HandleToolAction.Bind(3))
     ToolBoxGui.Add("Button", "x270 yp w240 h42 Left", " 4. 转换为纯小写 (lower)").OnEvent("Click", HandleToolAction.Bind(4))
 
-    ; 第三行：5. 本地翻译（独占一行通铺，拉满宽度）
-    ToolBoxGui.Add("Button", "x20 y+10 w490 h42 Left", " 5. 🚀 翻译为英文 (本地 API 接口)").OnEvent("Click", HandleToolAction.Bind(5))
+    ; 第三行：5.翻译为英文 (左)  |  6.翻译为中文 (右)
+    ToolBoxGui.Add("Button", "x20 y+10 w240 h42 Left", " 5. 🚀 翻译为英文").OnEvent("Click", HandleToolAction.Bind(5))
+    ToolBoxGui.Add("Button", "x270 yp w240 h42 Left", " 6. 🚀 翻译为中文").OnEvent("Click", HandleToolAction.Bind(6))
 
     ; 第四行：取消/关闭按钮
     ToolBoxGui.SetFont("s11 c999999 norm", "Microsoft YaHei")
@@ -89,7 +90,9 @@ HandleToolAction(ActionType, *)
         case 4:
             ResultText := StrLower(SelectedText)
         case 5:
-            ResultText := TranslateToEnglish(SelectedText)
+            ResultText := TranslateTo(SelectedText, "en")
+        case 6:
+            ResultText := TranslateTo(SelectedText, "zh-Hans")
     }
 
     if (ResultText != "") {
@@ -138,13 +141,13 @@ ToSnakeCase(str) {
     return outStr
 }
 
-TranslateToEnglish(textToTranslate) {
+TranslateTo(textToTranslate, targetLang) {
     ToolTip "⏳ 正在调用本地接口翻译中..."
 
     escapedText := RegExReplace(textToTranslate, '"', '\"')
     escapedText := RegExReplace(escapedText, '`n', '\n')
     escapedText := RegExReplace(escapedText, '`r', '\r')
-    jsonPayload := '{"q": "' escapedText '", "source": "auto", "target": "en"}'
+    jsonPayload := '{"q": "' escapedText '", "source": "auto", "target": "' targetLang '"}'
 
     try {
         whr := ComObject("WinHttp.WinHttpRequest.5.1")
@@ -152,7 +155,10 @@ TranslateToEnglish(textToTranslate) {
         whr.SetRequestHeader("Content-Type", "application/json")
         whr.Send(jsonPayload)
 
-        responseJSON := whr.ResponseText
+        ; 直接用原始字节并按 UTF-8 解码，避免 ResponseText 按错误编码解出乱码
+        arr := whr.ResponseBody
+        pData := NumGet(ComObjValue(arr) + 8 + A_PtrSize, "Ptr")
+        responseJSON := StrGet(pData, arr.MaxIndex() + 1, "UTF-8")
 
         ; 提取匹配组中的第一个值（即翻译后的文本）
         if RegExMatch(responseJSON, '"translatedText"\s*:\s*"([^"]+)"', &match) {
