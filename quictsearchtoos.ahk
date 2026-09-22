@@ -90,9 +90,9 @@ HandleToolAction(ActionType, *)
         case 4:
             ResultText := StrLower(SelectedText)
         case 5:
-            ResultText := TranslateTo(SelectedText, "en")
+            ResultText := TranslateTo(SelectedText, "zh-Hans", "en")
         case 6:
-            ResultText := TranslateTo(SelectedText, "zh-Hans")
+            ResultText := TranslateTo(SelectedText, "en", "zh-Hans")
     }
 
     if (ResultText != "") {
@@ -141,13 +141,13 @@ ToSnakeCase(str) {
     return outStr
 }
 
-TranslateTo(textToTranslate, targetLang) {
+TranslateTo(textToTranslate, source, targetLang) {
     ToolTip "⏳ 正在调用本地接口翻译中..."
 
     escapedText := RegExReplace(textToTranslate, '"', '\"')
     escapedText := RegExReplace(escapedText, '`n', '\n')
     escapedText := RegExReplace(escapedText, '`r', '\r')
-    jsonPayload := '{"q": "' escapedText '", "source": "auto", "target": "' targetLang '"}'
+    jsonPayload := '{"q": "' escapedText '", "source": "' source '", "target": "' targetLang '"}'
 
     try {
         whr := ComObject("WinHttp.WinHttpRequest.5.1")
