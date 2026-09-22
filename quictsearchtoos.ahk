@@ -103,24 +103,39 @@ HandleToolAction(ActionType, *)
 
 ; ─── 文本转换底层函数群 ───
 ToCamelCase(str) {
-    str := RegExReplace(str, "[\s_-]+", " ")
-    words := StrSplit(str, " ")
+    ; 按行转换并保留原有的换行符（\r\n 或 \n）
+    lineSep := InStr(str, "`r`n") ? "`r`n" : "`n"
+    lines := StrSplit(StrReplace(str, "`r", ""), "`n")
     outStr := ""
-    for idx, word in words {
-        if (word == "")
-            continue
-        if (idx == 1)
-            outStr .= StrLower(word)
-        else
-            outStr .= StrUpper(SubStr(word, 1, 1)) . StrLower(SubStr(word, 2))
+    for index, line in lines {
+        if (index > 1)
+            outStr .= lineSep
+        words := StrSplit(RegExReplace(line, "[\s_-]+", " "), " ")
+        for idx, word in words {
+            if (word == "")
+                continue
+            if (idx == 1)
+                outStr .= StrLower(word)
+            else
+                outStr .= StrUpper(SubStr(word, 1, 1)) . StrLower(SubStr(word, 2))
+        }
     }
     return outStr
 }
 
 ToSnakeCase(str) {
-    str := RegExReplace(str, "([a-z0-9])([A-Z])", "\$1_\$2")
-    str := RegExReplace(str, "[\s-]+", "_")
-    return StrLower(RegExReplace(str, "_+", "_"))
+    ; 按行转换并保留原有的换行符（\r\n 或 \n）
+    lineSep := InStr(str, "`r`n") ? "`r`n" : "`n"
+    lines := StrSplit(StrReplace(str, "`r", ""), "`n")
+    outStr := ""
+    for index, line in lines {
+        if (index > 1)
+            outStr .= lineSep
+        text := RegExReplace(line, "([a-z0-9])([A-Z])", "\$1_\$2")
+        text := RegExReplace(text, "[\s-]+", "_")
+        outStr .= StrLower(RegExReplace(text, "_+", "_"))
+    }
+    return outStr
 }
 
 TranslateToEnglish(textToTranslate) {
