@@ -59,8 +59,8 @@ global ToolBoxGui := ""
     ToolBoxGui.Add("Button", "x270 yp w240 h42 Left", " 4. 转换为纯小写 (lower)").OnEvent("Click", HandleToolAction.Bind(4))
 
     ; 第三行：5.翻译为英文 (左)  |  6.翻译为中文 (右)
-    ToolBoxGui.Add("Button", "x20 y+10 w240 h42 Left", " 5. 🚀 翻译为英文").OnEvent("Click", HandleToolAction.Bind(5))
-    ToolBoxGui.Add("Button", "x270 yp w240 h42 Left", " 6. 🚀 翻译为中文").OnEvent("Click", HandleToolAction.Bind(6))
+    ToolBoxGui.Add("Button", "x20 y+10 w240 h42 Left", " 5. 中文➡️英文").OnEvent("Click", HandleToolAction.Bind(5))
+    ToolBoxGui.Add("Button", "x270 yp w240 h42 Left", " 6. 英文➡️中文").OnEvent("Click", HandleToolAction.Bind(6))
 
     ; 第四行：取消/关闭按钮
     ToolBoxGui.SetFont("s11 c999999 norm", "Microsoft YaHei")
